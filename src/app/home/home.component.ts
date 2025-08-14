@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
-
-import { QuoteService } from './quote.service';
+import { UsersService, User } from './users.service';
 
 @Component({
   selector: 'app-home',
@@ -9,22 +8,19 @@ import { QuoteService } from './quote.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  quote: string | undefined;
+  users: User[] = [];
   isLoading = false;
 
-  constructor(private quoteService: QuoteService) {}
+  constructor(private usersService: UsersService) {}
 
   ngOnInit() {
     this.isLoading = true;
-    this.quoteService
-      .getRandomQuote({ category: 'dev' })
-      .pipe(
-        finalize(() => {
-          this.isLoading = false;
-        })
-      )
-      .subscribe((quote: string) => {
-        this.quote = quote;
+    this.usersService
+      .getUsers()
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (data) => (this.users = data),
+        error: (err) => console.error('Error loading users', err),
       });
   }
 }
