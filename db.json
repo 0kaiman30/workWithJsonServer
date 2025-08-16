@@ -1,64 +1,29 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "John",
       "age": 25
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Anna",
       "age": 30
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Aisha",
       "age": 7
     },
     {
-      "id": 4,
-      "name": "Beka",
-      "age": 57
-    },
-    {
-      "id": 5,
+      "id": "4",
       "name": "Kai",
       "age": 19
     },
     {
-      "id": 6,
-      "name": "Sheva",
-      "age": 23
-    },
-    {
-      "id": 7,
-      "name": "Lana",
-      "age": 36
-    },
-    {
-      "id": 8,
-      "name": "Bulka",
-      "age": 2
-    },
-    {
-      "id": "a15f",
-      "name": "Marta",
-      "age": 100
-    },
-    {
-      "id": "1984",
-      "name": "John",
-      "age": 12
-    },
-    {
-      "id": "733c",
-      "name": "Loli",
-      "age": 52
-    },
-    {
-      "id": "2255",
-      "name": "Dava",
-      "age": 333
+      "id": "0dae",
+      "name": "Zama",
+      "age": 9
     }
   ]
 }

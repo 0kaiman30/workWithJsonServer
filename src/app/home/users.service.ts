@@ -21,6 +21,15 @@ export class UsersService {
   }
 
   addUser(user: Omit<User, 'id'>): Observable<User> {
-    return this.httpClient.post<User>(this.apiUrl, user);
+    const body = { name: user.name, age: Number(user.age) } as Omit<User, 'id'>;
+    return this.httpClient.post<User>(this.apiUrl, body);
+  }
+
+  updateUser(user: User): Observable<User> {
+    return this.httpClient.put<User>(`${this.apiUrl}/${user.id}`, user);
+  }
+
+  deleteUser(id: number): Observable<void> {
+    return this.httpClient.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

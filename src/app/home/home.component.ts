@@ -12,6 +12,8 @@ export class HomeComponent implements OnInit {
   users: User[] = [];
   isLoading = false;
   userForm!: FormGroup;
+  editingUser: User | null = null;
+  showModal = false;
 
   constructor(private usersService: UsersService, private fb: FormBuilder) {}
 
@@ -41,10 +43,44 @@ export class HomeComponent implements OnInit {
     const newUser = this.userForm.value;
     this.usersService.addUser(newUser).subscribe({
       next: (user) => {
-        this.users.push(user); // сразу обновляем список
+        this.users.push(user);
         this.userForm.reset();
       },
       error: (err) => console.error('Error adding user', err),
+    });
+  }
+
+  startEdit(user: User) {
+    this.editingUser = { ...user }; // копия, чтобы не портить сразу список
+    this.showModal = true;
+  }
+
+  updateUser() {
+    if (!this.editingUser) return;
+
+    this.usersService.updateUser(this.editingUser).subscribe({
+      next: (user) => {
+        const index = this.users.findIndex((u) => u.id === user.id);
+        if (index > -1) {
+          this.users[index] = user;
+        }
+        this.closeModal();
+      },
+      error: (err) => console.error('Error updating user', err),
+    });
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.editingUser = null;
+  }
+
+  deleteUser(id: number) {
+    this.usersService.deleteUser(id).subscribe({
+      next: () => {
+        this.users = this.users.filter((u) => u.id !== id);
+      },
+      error: (err) => console.error('Error deleting user', err),
     });
   }
 }

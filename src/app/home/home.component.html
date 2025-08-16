@@ -4,7 +4,11 @@
   <div *ngIf="isLoading">Loading...</div>
 
   <ul *ngIf="!isLoading">
-    <li *ngFor="let user of users">{{ user.name }} — {{ user.age }} years old</li>
+    <li *ngFor="let user of users">
+      {{ user.name }} — {{ user.age }} years old
+      <button (click)="startEdit(user)">Update</button>
+      <button (click)="deleteUser(user.id)">Delete</button>
+    </li>
   </ul>
 
   <hr />
@@ -16,4 +20,25 @@
 
     <button type="submit" [disabled]="userForm.invalid">Add</button>
   </form>
+
+  <div class="modal-backdrop" *ngIf="showModal">
+    <div class="modal">
+      <h3>Edit User</h3>
+
+      <label>
+        Name:
+        <input [(ngModel)]="editingUser!.name" />
+      </label>
+      <br />
+      <label>
+        Age:
+        <input type="number" [(ngModel)]="editingUser!.age" />
+      </label>
+
+      <div class="modal-actions">
+        <button (click)="updateUser()">Save</button>
+        <button (click)="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
 </div>
