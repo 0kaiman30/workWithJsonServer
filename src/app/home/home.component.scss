@@ -1,11 +1,19 @@
 .container {
-  width: 90%;
+  width: 80%;
+  margin: 0 auto;
 }
 
 h2 {
   font-size: 1.5rem;
   font-weight: 700;
   color: #1f2937;
+  padding: 1rem;
+}
+
+.search-add-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   padding: 1rem;
 }
 
@@ -16,11 +24,20 @@ input[type="number"] {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 
   &:focus {
     border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
+}
+
+.search-add-container input[type="text"] {
+  flex: 1;
+}
+
+.search-add-container button {
+  white-space: nowrap;
 }
 
 .sort-buttons {
@@ -31,7 +48,6 @@ input[type="number"] {
 
 .sort-buttons button,
 .pagination button,
-.modal-actions button,
 button {
   padding: 0.75rem 1.5rem;
   background-color: #2563eb;
@@ -39,10 +55,11 @@ button {
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.1s;
 
   &:hover {
     background-color: #1d4ed8;
+    transform: translateY(-1px);
   }
 
   &:disabled {
@@ -65,10 +82,11 @@ li {
   padding: 1rem;
   background-color: white;
   border-radius: 8px;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, box-shadow 0.2s;
 
   &:hover {
     background-color: #f3f4f6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
 }
 
@@ -110,40 +128,80 @@ li button:last-of-type {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 .modal {
   background-color: white;
-  padding: 2rem;
-  border-radius: 12px;
-  max-width: 400px;
+  padding: 0;
+  border-radius: 16px;
+  max-width: 480px;
   width: 100%;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  transform: scale(0.9);
+  animation: scaleIn 0.3s ease-in-out forwards;
+  overflow: hidden;
 }
 
 .modal h3 {
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  color: #1f2937;
-  padding: 1rem;
+  color: white;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  text-align: center;
+  margin: 0;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
 }
 
 .modal form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.modal input[type="text"],
+.modal input[type="number"] {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background-color: #f9fafb;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+.modal-actions button {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
+}
+
+.modal-actions button[type="submit"] {
+  background-color: #2563eb;
+  &:hover {
+    background-color: #1d4ed8;
+  }
 }
 
 .modal-actions button[type="button"] {
@@ -151,5 +209,26 @@ li button:last-of-type {
   color: #1f2937;
   &:hover {
     background-color: #d1d5db;
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }

@@ -3,7 +3,10 @@
 
   <div *ngIf="isLoading">Loading...</div>
 
-  <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" (input)="filterUsers()" />
+  <div class="search-add-container">
+    <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" (input)="filterUsers()" />
+    <button (click)="openModal('add')">Add New User</button>
+  </div>
 
   <div class="sort-buttons">
     <button (click)="sortBy('name')">Sort by Name</button>
@@ -25,8 +28,6 @@
   </div>
 
   <hr />
-
-  <button (click)="openModal('add')">Add New User</button>
 
   <div class="modal-backdrop" *ngIf="showModal" [@fadeInOut]>
     <div class="modal" [@slideInOut]>
