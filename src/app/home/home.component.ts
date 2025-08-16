@@ -12,8 +12,15 @@ export class HomeComponent implements OnInit {
   users: User[] = [];
   isLoading = false;
   userForm!: FormGroup;
-  editingUser: User | null = null;
   showModal = false;
+  editingUser: User | null = null;
+  modalMode: 'add' | 'edit' = 'add';
+  searchTerm: string = '';
+  filteredUsers: User[] = [];
+  currentPage: number = 1;
+  pageSize: number = 5;
+  totalPages: number = 1;
+  sortField: 'name' | 'age' | null = null;
 
   constructor(private usersService: UsersService, private fb: FormBuilder) {}
 
@@ -32,47 +39,94 @@ export class HomeComponent implements OnInit {
       .getUsers()
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: (data) => (this.users = data),
+        next: (data) => {
+          this.users = data;
+          this.applyFilters();
+        },
         error: (err) => console.error('Error loading users', err),
       });
   }
 
-  addUser() {
-    if (this.userForm.invalid) return;
+  applyFilters() {
+    let temp = this.users.filter((u) => u.name.toLowerCase().includes(this.searchTerm.toLowerCase()));
 
-    const newUser = this.userForm.value;
-    this.usersService.addUser(newUser).subscribe({
-      next: (user) => {
-        this.users.push(user);
-        this.userForm.reset();
-      },
-      error: (err) => console.error('Error adding user', err),
-    });
+    if (this.sortField) {
+      temp.sort((a, b) => (this.sortField === 'name' ? a.name.localeCompare(b.name) : a.age - b.age));
+    }
+
+    this.totalPages = Math.ceil(temp.length / this.pageSize);
+    const start = (this.currentPage - 1) * this.pageSize;
+    this.filteredUsers = temp.slice(start, start + this.pageSize);
   }
 
-  startEdit(user: User) {
-    this.editingUser = { ...user }; // копия, чтобы не портить сразу список
+  sortBy(field: 'name' | 'age') {
+    this.sortField = field;
+    this.applyFilters();
+  }
+
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.applyFilters();
+  }
+
+  filterUsers() {
+    this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  openModal(mode: 'add' | 'edit', user?: User) {
+    this.modalMode = mode;
+
+    if (mode === 'edit' && user) {
+      this.editingUser = { ...user };
+      this.userForm.setValue({
+        name: user.name,
+        age: user.age,
+      });
+    } else {
+      this.editingUser = null;
+      this.userForm.reset();
+    }
+
     this.showModal = true;
   }
 
-  updateUser() {
-    if (!this.editingUser) return;
+  startEdit(user: User) {
+    this.editingUser = { ...user };
+    this.showModal = true;
+  }
 
-    this.usersService.updateUser(this.editingUser).subscribe({
-      next: (user) => {
-        const index = this.users.findIndex((u) => u.id === user.id);
-        if (index > -1) {
-          this.users[index] = user;
-        }
-        this.closeModal();
-      },
-      error: (err) => console.error('Error updating user', err),
-    });
+  saveUser() {
+    if (this.userForm.invalid) return;
+
+    const data = this.userForm.value;
+
+    if (this.modalMode === 'add') {
+      this.usersService.addUser(data).subscribe({
+        next: (user) => {
+          this.users.push(user);
+          this.applyFilters();
+          this.closeModal();
+        },
+      });
+    } else if (this.modalMode === 'edit' && this.editingUser) {
+      const updatedUser: User = { ...this.editingUser, ...this.userForm.value };
+      this.usersService.updateUser(updatedUser).subscribe({
+        next: (user) => {
+          const index = this.users.findIndex((u) => u.id === user.id);
+          if (index > -1) this.users[index] = user;
+          this.applyFilters();
+          this.closeModal();
+        },
+      });
+    }
   }
 
   closeModal() {
     this.showModal = false;
     this.editingUser = null;
+    this.userForm.reset();
   }
 
   deleteUser(id: number) {

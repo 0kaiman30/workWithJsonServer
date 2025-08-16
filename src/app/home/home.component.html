@@ -3,42 +3,43 @@
 
   <div *ngIf="isLoading">Loading...</div>
 
-  <ul *ngIf="!isLoading">
-    <li *ngFor="let user of users">
+  <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" (input)="filterUsers()" />
+
+  <div class="sort-buttons">
+    <button (click)="sortBy('name')">Sort by Name</button>
+    <button (click)="sortBy('age')">Sort by Age</button>
+  </div>
+
+  <ul>
+    <li *ngFor="let user of filteredUsers">
       {{ user.name }} — {{ user.age }} years old
-      <button (click)="startEdit(user)">Update</button>
+      <button (click)="openModal('edit', user)">Update</button>
       <button (click)="deleteUser(user.id)">Delete</button>
     </li>
   </ul>
 
+  <div class="pagination">
+    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+  </div>
+
   <hr />
 
-  <h3>Add New User</h3>
-  <form [formGroup]="userForm" (ngSubmit)="addUser()">
-    <input formControlName="name" placeholder="Name" />
-    <input formControlName="age" type="number" placeholder="Age" />
+  <button (click)="openModal('add')">Add New User</button>
 
-    <button type="submit" [disabled]="userForm.invalid">Add</button>
-  </form>
+  <div class="modal-backdrop" *ngIf="showModal" [@fadeInOut]>
+    <div class="modal" [@slideInOut]>
+      <h3>{{ modalMode === 'add' ? 'Add User' : 'Edit User' }}</h3>
 
-  <div class="modal-backdrop" *ngIf="showModal">
-    <div class="modal">
-      <h3>Edit User</h3>
-
-      <label>
-        Name:
-        <input [(ngModel)]="editingUser!.name" />
-      </label>
-      <br />
-      <label>
-        Age:
-        <input type="number" [(ngModel)]="editingUser!.age" />
-      </label>
-
-      <div class="modal-actions">
-        <button (click)="updateUser()">Save</button>
-        <button (click)="closeModal()">Cancel</button>
-      </div>
+      <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+        <input formControlName="name" placeholder="Name" />
+        <input formControlName="age" type="number" placeholder="Age" />
+        <div class="modal-actions">
+          <button type="submit" [disabled]="userForm.invalid">Save</button>
+          <button type="button" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
