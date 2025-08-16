@@ -1,7 +1,19 @@
 <div class="container">
   <h2>Users List</h2>
+
   <div *ngIf="isLoading">Loading...</div>
+
   <ul *ngIf="!isLoading">
-    <li *ngFor="let user of users">{{ user.id }}. {{ user.name }} — {{ user.age }} years old</li>
+    <li *ngFor="let user of users">{{ user.name }} — {{ user.age }} years old</li>
   </ul>
+
+  <hr />
+
+  <h3>Add New User</h3>
+  <form [formGroup]="userForm" (ngSubmit)="addUser()">
+    <input formControlName="name" placeholder="Name" />
+    <input formControlName="age" type="number" placeholder="Age" />
+
+    <button type="submit" [disabled]="userForm.invalid">Add</button>
+  </form>
 </div>

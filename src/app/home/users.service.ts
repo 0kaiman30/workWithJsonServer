@@ -19,4 +19,8 @@ export class UsersService {
   getUsers(): Observable<User[]> {
     return this.httpClient.get<User[]>(this.apiUrl);
   }
+
+  addUser(user: Omit<User, 'id'>): Observable<User> {
+    return this.httpClient.post<User>(this.apiUrl, user);
+  }
 }
